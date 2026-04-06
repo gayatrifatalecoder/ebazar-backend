@@ -90,12 +90,11 @@ const AdminController = {
 
   async triggerCampaignSync(req, res) {
     try {
-      await queues.campaignSync.add('sync-campaigns', {}, {
-        removeOnComplete: true,
-        jobId: `sync-${Date.now()}`,
-      });
-      res.json({ success: true, message: 'Campaign sync queued' });
+      logger.info('Starting manual synchronous campaign sync from admin request...');
+      const result = await CampaignSyncService.syncAllCampaigns();
+      res.json({ success: true, message: 'Campaign sync completed', data: result });
     } catch (err) {
+      logger.error('Error in manual campaign sync: ' + err.message);
       res.status(500).json({ success: false, message: err.message });
     }
   },

@@ -33,15 +33,44 @@ const INRDealsService = {
    */
   async getCampaigns(params = {}) {
     try {
-      // NOTE: Adjusting this according to standard endpoint behavior,
-      // If the API requires POST to fetch list as well, adjust accordingly.
-      // Usually, list API is GET or POST to /campaigns
-      const { data } = await inrDealsClient.post('/campaigns/list', {
-         inventory_id: config.inrDeals.inventoryId,
-         status: 'active',
-         ...params
-      });
-      return data;
+      let hasNextPage = true;
+      let nextCursor = null;
+      let allCampaigns = [];
+
+      logger.info('Starting full paginated fetch for INRDeals campaigns...');
+
+      while (hasNextPage) {
+        logger.info(`Fetching page with cursor: ${nextCursor || 'null'}...`);
+        
+        const requestBody = {
+          inventory_id: config.inrDeals.inventoryId,
+          status: 'active',
+          page_size: 50,
+          page_action: 'next',
+          cursor: nextCursor,
+          ...params
+        };
+
+        const { data } = await inrDealsClient.post('/campaigns/list', requestBody);
+
+        if (!data.success || !data.data) {
+          logger.error(`API Error or No Data found: ${JSON.stringify(data)}`);
+          break;
+        }
+
+        allCampaigns.push(...data.data);
+
+        hasNextPage = data.meta?.pagination?.has_next_page || false;
+        nextCursor = data.meta?.pagination?.next_cursor || null;
+
+        if (hasNextPage) {
+          // Delay to prevent hitting rate limits during pagination
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      logger.info(`Finished fetching. Total campaigns retrieved: ${allCampaigns.length}`);
+      return { success: true, data: allCampaigns };
     } catch (err) {
       logger.error(`INRDeals getCampaigns error: ${err.message}`);
       throw err;

@@ -44,10 +44,6 @@ const CampaignSyncService = {
     return results;
   },
 
-  /**
-   * Sync a single platform by INRDeals ID
-   * Used when admin triggers manual refresh
-   */
   async syncSingleCampaign(inrDealsId) {
     const fullDetail = await INRDealsService.getCampaignById(inrDealsId);
     const platform = await this.upsertPlatform(fullDetail);
@@ -55,10 +51,6 @@ const CampaignSyncService = {
     return platform;
   },
 
-  /**
-   * Upsert platform from INRDeals campaign detail
-   * Preserves admin-controlled fields (displayOrder, goldConfig, etc.)
-   */
   async upsertPlatform(campaignDetail) {
     const mapped = INRDealsService.mapCampaignToPlatform(campaignDetail);
 
@@ -125,7 +117,7 @@ const CampaignSyncService = {
       const best = slabs
         .filter(s => s.commission && s.commission[0]?.percentage > 0)
         .sort((a, b) => b.commission[0].percentage - a.commission[0].percentage)[0];
-        
+
       return best || { label: 'Default', percentage: 0 };
     }
 

@@ -14,6 +14,7 @@ const initCronJobs = () => {
   });
 
   // Scraper scheduler based on .env config
+  /*
   cron.schedule(config.scraper.cron, async () => {
     logger.info('[Cron] Triggering scraper check');
     
@@ -54,8 +55,9 @@ const initCronJobs = () => {
       logger.error(`[Cron] Scheduled scraper error: ${err.message}`);
     }
   });
+  */
 
-  logger.info(`[Cron] Initialized with schedules: SYNC(${config.campaignSync.cron}), SCRAPER(${config.scraper.cron})`);
+  logger.info(`[Cron] Initialized with schedules: SYNC(${config.campaignSync.cron})`);
 };
 
 module.exports = { initCronJobs };

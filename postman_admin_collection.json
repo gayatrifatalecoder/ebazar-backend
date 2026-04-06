@@ -1,0 +1,218 @@
+{
+  "info": {
+    "name": "Ebazar Backend - Admin API",
+    "description": "Postman collection containing all admin routes for Ebazar Backend application.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Platforms",
+      "item": [
+        {
+          "name": "Get All Platforms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/platforms",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "platforms"]
+            }
+          }
+        },
+        {
+          "name": "Update Platform",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayOrder\": 1,\n  \"isActive\": true,\n  \"isFeatured\": false,\n  \"logoUrl\": \"https://example.com/logo.png\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/platforms/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "platforms", ":id"],
+              "variable": [
+                { "key": "id", "value": "PLATFORM_MONGO_ID" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reorder Platforms",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order\": [\n    { \"platformId\": \"PLATFORM_MONGO_ID_1\", \"displayOrder\": 1 },\n    { \"platformId\": \"PLATFORM_MONGO_ID_2\", \"displayOrder\": 2 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/platforms/reorder",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "platforms", "reorder"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Campaign Sync",
+      "item": [
+        {
+          "name": "Trigger Campaign Sync (All INRDeals)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sync/campaigns",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "sync", "campaigns"]
+            }
+          }
+        },
+        {
+          "name": "Sync Single Campaign (by INRDeals ID)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/sync/campaign/:inrDealsId",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "sync", "campaign", ":inrDealsId"],
+              "variable": [
+                { "key": "inrDealsId", "value": "12345" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Scraper Jobs",
+      "item": [
+        {
+          "name": "Trigger Scrape for Platform",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/scrape/:platformId",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "scrape", ":platformId"],
+              "variable": [
+                { "key": "platformId", "value": "PLATFORM_MONGO_ID" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Scraper Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/scrape/jobs?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "scrape", "jobs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gold Rules",
+      "item": [
+        {
+          "name": "Get Global Admin Config",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/gold-rules",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "gold-rules"]
+            }
+          }
+        },
+        {
+          "name": "Update Global Gold Rules & Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"defaultGoldPercent\": 20,\n  \"flags\": {\n    \"scrapingEnabled\": true,\n    \"autoSyncEnabled\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/gold-rules",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "gold-rules"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Update Product Config (Admin Settings)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isTrending\": true,\n  \"isFeatured\": true,\n  \"isActive\": true,\n  \"displayBoost\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/products/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "products", ":id"],
+              "variable": [
+                { "key": "id", "value": "PRODUCT_MONGO_ID" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Analytics",
+      "item": [
+        {
+          "name": "Get Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "dashboard"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    }
+  ]
+}
