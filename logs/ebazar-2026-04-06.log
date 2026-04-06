@@ -1,2 +1,6 @@
 2026-04-06 12:02:51 [INFO]: All Bull workers initialized and listening
 2026-04-06 12:03:21 [ERROR]: MongoDB Connection Error: connect ECONNREFUSED 127.0.0.1:27017
+2026-04-06 12:16:18 [INFO]: All Bull workers initialized and listening
+2026-04-06 12:16:19 [INFO]: MongoDB Connected: ac-elabmzo-shard-00-01.qyfosa0.mongodb.net
+2026-04-06 12:16:19 [INFO]: [Cron] Initialized with schedules: SYNC(0 */4 * * *), SCRAPER(0 */6 * * *)
+2026-04-06 12:16:19 [INFO]: 🚀 E-Bazar backend running on port 5000 [development]
