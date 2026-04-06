@@ -44,6 +44,13 @@ const INRDealsService = {
         
         const requestBody = {
           inventory_id: config.inrDeals.inventoryId,
+          store_id: '',
+          types: [],
+          categories: [],
+          regions: [],
+          search: '',
+          sort_field: 'name',
+          sort_order: 'asc',
           status: 'active',
           page_size: 50,
           page_action: 'next',
@@ -53,12 +60,14 @@ const INRDealsService = {
 
         const { data } = await inrDealsClient.post('/campaigns/list', requestBody);
 
-        if (!data.success || !data.data) {
+        if (!data || data.success === false) {
           logger.error(`API Error or No Data found: ${JSON.stringify(data)}`);
           break;
         }
 
-        allCampaigns.push(...data.data);
+        if (data.data) {
+          allCampaigns.push(...data.data);
+        }
 
         hasNextPage = data.meta?.pagination?.has_next_page || false;
         nextCursor = data.meta?.pagination?.next_cursor || null;

@@ -72,3 +72,166 @@
 2026-04-06 15:51:55 [INFO]: MongoDB Connected: mongodb+srv://gayatrifatale_db_user:qOChL7kilEKcVDFE@ebazzar.qyfosa0.mongodb.net/ebazzar
 2026-04-06 15:51:55 [INFO]: [Cron] Initialized with schedules: SYNC(0 */4 * * *)
 2026-04-06 15:51:55 [INFO]: 🚀 E-Bazar backend running on port 5000 [development]
+2026-04-06 17:08:45 [INFO]: Starting full campaign sync from INRDeals...
+2026-04-06 17:08:45 [INFO]: Starting full paginated fetch for INRDeals campaigns...
+2026-04-06 17:08:45 [INFO]: Fetching page with cursor: null...
+2026-04-06 17:08:47 [INFO]: Fetching page with cursor: Geekbuying...
+2026-04-06 17:08:47 [INFO]: Fetching page with cursor: Noise...
+2026-04-06 17:08:48 [INFO]: Fetching page with cursor: Wonder Chef...
+2026-04-06 17:08:48 [INFO]: Finished fetching. Total campaigns retrieved: 152
+2026-04-06 17:08:48 [INFO]: Fetched 152 campaigns from INRDeals
+2026-04-06 17:08:49 [DEBUG]: Updated platform: Ace Blend
+2026-04-06 17:08:50 [DEBUG]: Updated platform: Acer
+2026-04-06 17:08:50 [DEBUG]: Updated platform: Adidas
+2026-04-06 17:08:51 [DEBUG]: Updated platform: Air India Express
+2026-04-06 17:08:51 [DEBUG]: Updated platform: Air India Flights
+2026-04-06 17:08:52 [DEBUG]: Updated platform: Ajio
+2026-04-06 17:08:53 [DEBUG]: Updated platform: Ajmal Perfume
+2026-04-06 17:08:53 [DEBUG]: Updated platform: Aliexpress
+2026-04-06 17:08:54 [DEBUG]: Updated platform: Alpino
+2026-04-06 17:08:55 [DEBUG]: Updated platform: Amazon
+2026-04-06 17:08:55 [DEBUG]: Updated platform: Aramya
+2026-04-06 17:08:56 [DEBUG]: Updated platform: Assembly
+2026-04-06 17:08:56 [DEBUG]: Updated platform: Asus
+2026-04-06 17:08:57 [DEBUG]: Updated platform: Auric
+2026-04-06 17:08:58 [DEBUG]: Updated platform: Avon
+2026-04-06 17:08:58 [DEBUG]: Updated platform: Baby Forest
+2026-04-06 17:08:59 [DEBUG]: Updated platform: Bajaj Demat
+2026-04-06 17:08:59 [DEBUG]: Updated platform: Bath & Body Works
+2026-04-06 17:09:00 [DEBUG]: Updated platform: Beardo
+2026-04-06 17:09:01 [DEBUG]: Updated platform: Beautywise
+2026-04-06 17:09:01 [DEBUG]: Updated platform: Be Bodywise
+2026-04-06 17:09:02 [DEBUG]: Updated platform: Big Muscle Nutrition
+2026-04-06 17:09:03 [DEBUG]: Updated platform: Blissclub
+2026-04-06 17:09:03 [DEBUG]: Updated platform: Blue Tea
+2026-04-06 17:09:04 [DEBUG]: Updated platform: BoAt
+2026-04-06 17:09:04 [DEBUG]: Updated platform: Borosil
+2026-04-06 17:09:05 [DEBUG]: Updated platform: Bummer
+2026-04-06 17:09:06 [DEBUG]: Updated platform: Buy Indus Valley
+2026-04-06 17:09:06 [DEBUG]: Updated platform: Campus Shoes
+2026-04-06 17:09:07 [DEBUG]: Updated platform: Cleartrip Web
+2026-04-06 17:09:08 [DEBUG]: Updated platform: Clove Oral Care
+2026-04-06 17:09:08 [DEBUG]: Updated platform: CosIQ
+2026-04-06 17:09:09 [DEBUG]: Updated platform: Crocs
+2026-04-06 17:09:09 [DEBUG]: Updated platform: Croma
+2026-04-06 17:09:10 [DEBUG]: Updated platform: Demo
+2026-04-06 17:09:11 [DEBUG]: Updated platform: DHgate
+2026-04-06 17:09:11 [DEBUG]: Updated platform: Dot & Key
+2026-04-06 17:09:12 [DEBUG]: Updated platform: Dyson India
+2026-04-06 17:09:12 [DEBUG]: Updated platform: Emami Zanducare
+2026-04-06 17:09:13 [DEBUG]: Updated platform: Estuary World
+2026-04-06 17:09:14 [DEBUG]: Updated platform: FirstCry
+2026-04-06 17:09:14 [DEBUG]: Updated platform: Flipkart
+2026-04-06 17:09:15 [DEBUG]: Updated platform: FlixBus
+2026-04-06 17:09:16 [DEBUG]: Updated platform: Floweraura
+2026-04-06 17:09:16 [DEBUG]: Updated platform: Flynas
+2026-04-06 17:09:17 [DEBUG]: Updated platform: Forest Essentials
+2026-04-06 17:09:18 [DEBUG]: Updated platform: Fuel One
+2026-04-06 17:09:18 [DEBUG]: Updated platform: Furlenco
+2026-04-06 17:09:19 [DEBUG]: Updated platform: Fytika
+2026-04-06 17:09:20 [DEBUG]: Updated platform: Geekbuying
+2026-04-06 17:09:20 [DEBUG]: Updated platform: Geeklane
+2026-04-06 17:09:21 [DEBUG]: Updated platform: Get Your Guide
+2026-04-06 17:09:21 [DEBUG]: Updated platform: Ghar Soaps
+2026-04-06 17:09:22 [DEBUG]: Updated platform: GNC
+2026-04-06 17:09:23 [DEBUG]: Updated platform: Godrej Interio
+2026-04-06 17:09:24 [DEBUG]: Updated platform: Hammer
+2026-04-06 17:09:24 [DEBUG]: Updated platform: Havells
+2026-04-06 17:09:25 [DEBUG]: Updated platform: HCL Guvi
+2026-04-06 17:09:26 [DEBUG]: Updated platform: Health Kart
+2026-04-06 17:09:26 [DEBUG]: Updated platform: Hk Vitals
+2026-04-06 17:09:27 [DEBUG]: Updated platform: H&M
+2026-04-06 17:09:28 [DEBUG]: Updated platform: HOK Makeup
+2026-04-06 17:09:28 [DEBUG]: Updated platform: HyugaLife
+2026-04-06 17:09:29 [DEBUG]: Updated platform: Iba Cosmetics
+2026-04-06 17:09:30 [DEBUG]: Updated platform: IDFC  First Bank Saving Account
+2026-04-06 17:09:31 [DEBUG]: Updated platform: IGP
+2026-04-06 17:09:31 [DEBUG]: Updated platform: iHerb
+2026-04-06 17:09:32 [DEBUG]: Updated platform: Indigo Flights
+2026-04-06 17:09:33 [DEBUG]: Updated platform: Instax
+2026-04-06 17:09:33 [DEBUG]: Updated platform: JBL
+2026-04-06 17:09:34 [DEBUG]: Updated platform: Jockey
+2026-04-06 17:09:35 [DEBUG]: Updated platform: Kama Ayurveda
+2026-04-06 17:09:35 [DEBUG]: Updated platform: Kapiva
+2026-04-06 17:09:36 [INFO]: Starting full paginated fetch for INRDeals campaigns...
+2026-04-06 17:09:36 [INFO]: Fetching page with cursor: null...
+2026-04-06 17:09:36 [DEBUG]: Updated platform: Khadi Natural
+2026-04-06 17:09:36 [ERROR]: INRDeals getCampaigns error: Request failed with status code 400
+2026-04-06 17:09:37 [DEBUG]: Updated platform: Kimti
+2026-04-06 17:09:37 [DEBUG]: Updated platform: Kisah
+2026-04-06 17:09:38 [DEBUG]: Updated platform: Klook
+2026-04-06 17:09:39 [DEBUG]: Updated platform: Klydo
+2026-04-06 17:09:39 [DEBUG]: Updated platform: Kotak811
+2026-04-06 17:09:40 [DEBUG]: Updated platform: Krishna's Herbal & Ayurveda
+2026-04-06 17:09:41 [DEBUG]: Updated platform: Kurlon
+2026-04-06 17:09:42 [DEBUG]: Updated platform: Lenovo
+2026-04-06 17:09:42 [DEBUG]: Updated platform: Little Box
+2026-04-06 17:09:43 [DEBUG]: Updated platform: Loop Earplugs
+2026-04-06 17:09:44 [DEBUG]: Updated platform: MakeMyTrip Domestic Hotels
+2026-04-06 17:09:44 [DEBUG]: Updated platform: MakeMyTrip International Hotels
+2026-04-06 17:09:45 [DEBUG]: Updated platform: Malaysia Airlines
+2026-04-06 17:09:46 [DEBUG]: Updated platform: Mamaearth
+2026-04-06 17:09:46 [DEBUG]: Updated platform: Milton
+2026-04-06 17:09:47 [DEBUG]: Updated platform: Mivi
+2026-04-06 17:09:48 [DEBUG]: Updated platform: Moglix
+2026-04-06 17:09:48 [DEBUG]: Updated platform: Muscle Blaze
+2026-04-06 17:09:49 [DEBUG]: Updated platform: Muscletech
+2026-04-06 17:09:50 [DEBUG]: Updated platform: My Muse
+2026-04-06 17:09:51 [DEBUG]: Updated platform: Myntra
+2026-04-06 17:09:51 [DEBUG]: Updated platform: My Trident 
+2026-04-06 17:09:52 [DEBUG]: Updated platform: Neeman's
+2026-04-06 17:09:53 [DEBUG]: Updated platform: Neesh Perfumes
+2026-04-06 17:09:53 [DEBUG]: Updated platform: Nilkamal
+2026-04-06 17:09:54 [DEBUG]: Updated platform: Noise
+2026-04-06 17:09:55 [DEBUG]: Updated platform: Nua woman
+2026-04-06 17:09:56 [DEBUG]: Updated platform: Nykaa Beauty
+2026-04-06 17:09:56 [DEBUG]: Updated platform: Nykaa Fashion
+2026-04-06 17:09:57 [DEBUG]: Updated platform: Oneplus
+2026-04-06 17:09:58 [DEBUG]: Updated platform: Oppo
+2026-04-06 17:09:58 [DEBUG]: Updated platform: Organic India
+2026-04-06 17:09:59 [DEBUG]: Updated platform: Orpat
+2026-04-06 17:10:00 [DEBUG]: Updated platform: Our Little Joys
+2026-04-06 17:10:00 [DEBUG]: Updated platform: Pelago
+2026-04-06 17:10:01 [DEBUG]: Updated platform: Pepperfry
+2026-04-06 17:10:02 [DEBUG]: Updated platform: Perfora
+2026-04-06 17:10:02 [DEBUG]: Updated platform: Plum Goodness
+2026-04-06 17:10:03 [DEBUG]: Updated platform: Protouch
+2026-04-06 17:10:04 [DEBUG]: Updated platform: Pure Nutrition
+2026-04-06 17:10:04 [DEBUG]: Updated platform: Qatar Airways
+2026-04-06 17:10:05 [DEBUG]: Updated platform: Rangdeep
+2026-04-06 17:10:06 [DEBUG]: Updated platform: Realme
+2026-04-06 17:10:06 [DEBUG]: Updated platform: Redrail
+2026-04-06 17:10:07 [DEBUG]: Updated platform: Reliance Digital
+2026-04-06 17:10:07 [DEBUG]: Updated platform: R for Rabbit
+2026-04-06 17:10:08 [DEBUG]: Updated platform: Ruhe India
+2026-04-06 17:10:09 [DEBUG]: Updated platform: Samsung
+2026-04-06 17:10:09 [DEBUG]: Updated platform: Sanfe
+2026-04-06 17:10:10 [DEBUG]: Updated platform: Shyaway
+2026-04-06 17:10:11 [DEBUG]: Updated platform: Sirona
+2026-04-06 17:10:11 [DEBUG]: Updated platform: Sleepwell
+2026-04-06 17:10:12 [DEBUG]: Updated platform: Soul Flower
+2026-04-06 17:10:13 [DEBUG]: Updated platform: Spankers
+2026-04-06 17:10:13 [DEBUG]: Updated platform: Sugar Cosmetics
+2026-04-06 17:10:14 [DEBUG]: Updated platform: Super Bottoms
+2026-04-06 17:10:15 [DEBUG]: Updated platform: Swiss Beauty
+2026-04-06 17:10:16 [DEBUG]: Updated platform: Swisse
+2026-04-06 17:10:16 [DEBUG]: Updated platform: TataCliq
+2026-04-06 17:10:17 [DEBUG]: Updated platform: The Derma Co
+2026-04-06 17:10:18 [DEBUG]: Updated platform: The Man Company
+2026-04-06 17:10:18 [DEBUG]: Updated platform: The Natural Wash
+2026-04-06 17:10:19 [DEBUG]: Updated platform: Titan Skin
+2026-04-06 17:10:20 [DEBUG]: Updated platform: Trip
+2026-04-06 17:10:21 [DEBUG]: Updated platform: True Basics
+2026-04-06 17:10:21 [DEBUG]: Updated platform: Truloom
+2026-04-06 17:10:22 [DEBUG]: Updated platform: Uber
+2026-04-06 17:10:23 [DEBUG]: Updated platform: Udemy
+2026-04-06 17:10:24 [DEBUG]: Updated platform: Upakarma
+2026-04-06 17:10:24 [DEBUG]: Updated platform: Urban Ladder
+2026-04-06 17:10:25 [DEBUG]: Updated platform: Ustraa
+2026-04-06 17:10:26 [DEBUG]: Updated platform: Victoria Secret
+2026-04-06 17:10:26 [DEBUG]: Updated platform: Victoria Secret-UAE
+2026-04-06 17:10:27 [DEBUG]: Updated platform: Vijay Sales
+2026-04-06 17:10:28 [DEBUG]: Updated platform: Well Being Nutrition
+2026-04-06 17:10:29 [DEBUG]: Updated platform: Wonder Chef
+2026-04-06 17:10:29 [DEBUG]: Updated platform: Wow Skin Science
+2026-04-06 17:10:30 [DEBUG]: Updated platform: Yatra (Hotel and Flights)
