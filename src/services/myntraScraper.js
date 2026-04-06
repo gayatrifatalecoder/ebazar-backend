@@ -1,8 +1,8 @@
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
-const Product = require('../../models/Product');
-const { ScraperJob } = require('../../models/AdminConfig');
-const logger = require('../../utils/logger');
+const Product = require('../models/Product');
+const { ScraperJob } = require('../models/AdminConfig');
+const logger = require('../utils/logger');
 
 /**
  * Category → commission slab mapping for Myntra (from INRDeals response)

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "logs/.8d0663063f6b85bf283b0550bfb440ca3f22f3bd-audit.json",
+    "files": [
+        {
+            "date": 1775456779794,
+            "name": "logs/ebazar-2026-04-06.log",
+            "hash": "35ed45646c67632751f674e35f9161f5209c02c4043649ea7208fc694aa94244"
+        }
+    ],
+    "hashType": "sha256"
+}
