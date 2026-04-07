@@ -68,4 +68,15 @@ const optionalAuth = async (req, res, next) => {
   return authenticate(req, res, next);
 };
 
-module.exports = { authenticate, requireAdmin, optionalAuth };
+/**
+ * Validates the statically provisioned API key for the scraper webhook
+ */
+const verifyScraperKey = (req, res, next) => {
+  const apiKey = req.headers['x-api-key'];
+  if (!apiKey || apiKey !== config.scraper.apiKey) {
+    return res.status(401).json({ success: false, message: 'Invalid or missing API key' });
+  }
+  next();
+};
+
+module.exports = { authenticate, requireAdmin, optionalAuth, verifyScraperKey };

@@ -29,5 +29,6 @@ module.exports = {
   
   scraper: {
     cron: process.env.CRON_SCHEDULE_SCRAPER || '0 */6 * * *',
+    apiKey: process.env.SCRAPER_API_KEY || 'dev_scraper_key',
   }
 };

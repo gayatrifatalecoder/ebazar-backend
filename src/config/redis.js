@@ -52,6 +52,7 @@ const queues = {
   scrapeJobs: createQueue('scrapeJobs'),
   goldCredits: createQueue('goldCredits'),
   linkTracking: createQueue('linkTracking'),
+  scraperIngestion: createQueue('scraperIngestion'),
 };
 
 const cache = {
