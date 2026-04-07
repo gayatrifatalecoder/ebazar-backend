@@ -20,9 +20,15 @@ const CampaignSyncService = {
 
       for (const campaignSummary of campaigns) {
         try {
-          // campaignSummary from the list API has all the required details
-          await this.upsertPlatform(campaignSummary);
+          // campaignSummary from the list API lacks 'tier' (slabs/config)
+          // Fetch full detail for each to ensure we get the complete data
+          const fullDetail = await INRDealsService.getCampaignById(campaignSummary.id);
+          
+          await this.upsertPlatform(fullDetail);
           results.synced++;
+
+          // Delay to prevent hitting rate limits during bulk sync
+          await new Promise(resolve => setTimeout(resolve, 500));
         } catch (err) {
           logger.error(`Failed to sync campaign ${campaignSummary.id}: ${err.message}`);
           results.failed++;
