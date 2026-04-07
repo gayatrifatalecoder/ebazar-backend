@@ -41,13 +41,13 @@ const INRDealsService = {
 
       while (hasNextPage) {
         logger.info(`Fetching page with cursor: ${nextCursor || 'null'}...`);
-        
+
         const requestBody = {
           inventory_id: config.inrDeals.inventoryId,
           store_id: '',
           types: [],
           categories: [],
-          regions: [],
+          regions: ['AE', 'IN'],
           search: '',
           sort_field: 'name',
           sort_order: 'asc',
