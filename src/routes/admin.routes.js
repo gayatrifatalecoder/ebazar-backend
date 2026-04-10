@@ -30,4 +30,7 @@ router.put('/products/:id', AdminController.updateProduct);
 // ─── DASHBOARD STATS ─────────────────────────────────────────────────────
 router.get('/dashboard', AdminController.getDashboardStats);
 
+// ─── CONFIGURATION ───────────────────────────────────────────────────────
+router.get('/categories', AdminController.getSystemCategories);
+
 module.exports = router;

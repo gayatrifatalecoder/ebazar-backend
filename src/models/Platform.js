@@ -82,6 +82,14 @@ const PlatformSchema = new mongoose.Schema({
     deeplink: Boolean
   },
 
+  // Map Platform's INRDeals Slabs down to our Generic System Categories
+  systemCategoryMappings: [{
+    slabLabel: { type: String, required: true },       // e.g. "Tablets, Computer peripherals, Laptop netbooks"
+    systemCategory: { type: String, required: true },  // e.g. "Electronics"
+    systemSubcategory: { type: String },               // e.g. "Smartphones & Tablets"
+    isActive: { type: Boolean, default: true }         // Admin flag to disable certain slab associations
+  }],
+
   // Admin controlled fields (Should not be overwritten by Sync)
   displayOrder: { type: Number, default: 0, index: true }, // lower = shown first
   isActive: { type: Boolean, default: true, index: true }, // whether it shows in FRONTEND

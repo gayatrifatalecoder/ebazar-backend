@@ -40,13 +40,14 @@ const AdminController = {
    */
   async updatePlatform(req, res) {
     try {
-      const { displayOrder, isActive, isFeatured, goldConfig, logoUrl } = req.body;
+      const { displayOrder, isActive, isFeatured, goldConfig, logoUrl, systemCategoryMappings } = req.body;
       const update = {};
       if (displayOrder !== undefined) update.displayOrder = displayOrder;
       if (isActive !== undefined) update.isActive = isActive;
       if (isFeatured !== undefined) update.isFeatured = isFeatured;
       if (goldConfig !== undefined) update.goldConfig = goldConfig;
       if (logoUrl !== undefined) update.logoUrl = logoUrl;
+      if (systemCategoryMappings !== undefined) update.systemCategoryMappings = systemCategoryMappings;
 
       const platform = await Platform.findByIdAndUpdate(
         req.params.id,
@@ -259,6 +260,17 @@ const AdminController = {
           goldCredited: totalGoldValue[0]?.total || 0,
         },
       });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+  // ─── CATEGORY CONFIG ──────────────────────────────────────────────────────
+
+  getSystemCategories(req, res) {
+    try {
+      const SYSTEM_CATEGORIES = require('../config/categories');
+      res.json({ success: true, data: SYSTEM_CATEGORIES });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }

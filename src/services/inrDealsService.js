@@ -47,7 +47,7 @@ const INRDealsService = {
           store_id: '',
           types: [],
           categories: [],
-          regions: ['AE', 'IN'],
+          regions: ['AE', 'IN', 'GLOBAL'],
           search: '',
           sort_field: 'name',
           sort_order: 'asc',
