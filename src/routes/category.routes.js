@@ -1,5 +1,7 @@
 const express = require('express');
 const CategoryController = require('../controllers/category.controller');
+const { validate } = require('../middlewares/validate');
+const { categoryIdParamSchema } = require('../validations/category.validation');
 
 const router = express.Router();
 
@@ -53,7 +55,7 @@ router.get('/tree', CategoryController.getCategoryTree);
  *       200:
  *         description: List of subcategories
  */
-router.get('/:id/subcategories', CategoryController.getSubcategories);
+router.get('/:id/subcategories', validate(categoryIdParamSchema), CategoryController.getSubcategories);
 
 /**
  * @swagger
@@ -72,6 +74,6 @@ router.get('/:id/subcategories', CategoryController.getSubcategories);
  *       200:
  *         description: List of mapped platforms
  */
-router.get('/:id/platforms', CategoryController.getPlatformsByCategory);
+router.get('/:id/platforms', validate(categoryIdParamSchema), CategoryController.getPlatformsByCategory);
 
 module.exports = router;

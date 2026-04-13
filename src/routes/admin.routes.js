@@ -1,5 +1,15 @@
 const express = require('express');
 const { authenticate, requireAdmin } = require('../middlewares/auth');
+const { validate } = require('../middlewares/validate');
+const {
+  updatePlatformSchema,
+  reorderPlatformsSchema,
+  syncPlatformSchema,
+  triggerScrapeSchema,
+  getScraperJobsSchema,
+  updateGoldRulesSchema,
+  updateProductSchema
+} = require('../validations/admin.validation');
 const AdminController = require('../controllers/adminController');
 
 const router = express.Router();
@@ -13,8 +23,6 @@ const router = express.Router();
 
 // All admin routes should enforce Authentication and Role validation
 // router.use(authenticate, requireAdmin); // Uncomment when ready to test Auth
-
-// ─── PLATFORM MANAGEMENT ──────────────────────────────────────────────────
 
 /**
  * @swagger
@@ -57,7 +65,7 @@ router.get('/platforms', AdminController.getAllPlatforms);
  *       200:
  *         description: Updated platform
  */
-router.put('/platforms/:id', AdminController.updatePlatform);
+router.put('/platforms/:id', validate(updatePlatformSchema), AdminController.updatePlatform);
 
 /**
  * @swagger
@@ -85,7 +93,7 @@ router.put('/platforms/:id', AdminController.updatePlatform);
  *       200:
  *         description: Order updated successfully
  */
-router.post('/platforms/reorder', AdminController.reorderPlatforms);
+router.post('/platforms/reorder', validate(reorderPlatformsSchema), AdminController.reorderPlatforms);
 
 // ─── CAMPAIGN SYNC ───────────────────────────────────────────────────────
 
@@ -117,7 +125,7 @@ router.post('/sync/campaigns', AdminController.triggerCampaignSync);
  *       200:
  *         description: Target campaign synced
  */
-router.post('/sync/campaign/:inrDealsId', AdminController.syncSinglePlatform);
+router.post('/sync/campaign/:inrDealsId', validate(syncPlatformSchema), AdminController.syncSinglePlatform);
 
 // ─── SCRAPER MANAGEMENT ──────────────────────────────────────────────────
 
@@ -137,7 +145,7 @@ router.post('/sync/campaign/:inrDealsId', AdminController.syncSinglePlatform);
  *       200:
  *         description: Scrape job queued
  */
-router.post('/scrape/:platformId', AdminController.triggerScrape);
+router.post('/scrape/:platformId', validate(triggerScrapeSchema), AdminController.triggerScrape);
 
 /**
  * @swagger
@@ -160,7 +168,7 @@ router.post('/scrape/:platformId', AdminController.triggerScrape);
  *       200:
  *         description: Paginated list of scraper jobs
  */
-router.get('/scrape/jobs', AdminController.getScraperJobs);
+router.get('/scrape/jobs', validate(getScraperJobsSchema), AdminController.getScraperJobs);
 
 // ─── GOLD RULES MANAGEMENT ───────────────────────────────────────────────
 
@@ -197,7 +205,7 @@ router.get('/gold-rules', AdminController.getAdminConfig);
  *       200:
  *         description: Configuration updated
  */
-router.put('/gold-rules', AdminController.updateGoldRules);
+router.put('/gold-rules', validate(updateGoldRulesSchema), AdminController.updateGoldRules);
 
 // ─── PRODUCT MANAGEMENT ──────────────────────────────────────────────────
 
@@ -232,7 +240,7 @@ router.put('/gold-rules', AdminController.updateGoldRules);
  *       200:
  *         description: Product updated
  */
-router.put('/products/:id', AdminController.updateProduct);
+router.put('/products/:id', validate(updateProductSchema), AdminController.updateProduct);
 
 // ─── DASHBOARD STATS ─────────────────────────────────────────────────────
 

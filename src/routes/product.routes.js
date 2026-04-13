@@ -1,5 +1,7 @@
 const express = require('express');
 const ProductController = require('../controllers/product.controller');
+const { validate } = require('../middlewares/validate');
+const { getTopProductsSchema, getProductsSchema } = require('../validations/product.validation');
 
 const router = express.Router();
 
@@ -26,7 +28,7 @@ const router = express.Router();
  *       200:
  *         description: List of top trending/featured products
  */
-router.get('/top', ProductController.getTopProducts);
+router.get('/top', validate(getTopProductsSchema), ProductController.getTopProducts);
 
 /**
  * @swagger
@@ -52,6 +54,6 @@ router.get('/top', ProductController.getTopProducts);
  *       200:
  *         description: Paginated products
  */
-router.get('/', ProductController.getProducts);
+router.get('/', validate(getProductsSchema), ProductController.getProducts);
 
 module.exports = router;

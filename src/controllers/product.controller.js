@@ -118,7 +118,7 @@ const ProductController = {
    */
   async getTopProducts(req, res) {
     try {
-      const limit = parseInt(req.query.limit, 10) || 10;
+      const limit = req.query.limit;
       
       // Top products definition: isActive = true, and sort by either featured, trending, or highest discount
       const topProducts = await Product.find({ isActive: true })
@@ -139,7 +139,7 @@ const ProductController = {
    */
   async getProducts(req, res) {
     try {
-      const { page = 1, limit = 20, categoryId, search, sort } = req.query;
+      const { page, limit, categoryId, search, sort } = req.query;
 
       const query = { isActive: true };
 
@@ -159,8 +159,8 @@ const ProductController = {
       if (sort === 'discount') sortOptions = { discountPercent: -1 };
 
       const options = {
-        page: parseInt(page, 10),
-        limit: parseInt(limit, 10),
+        page,
+        limit,
         sort: sortOptions,
         populate: [{ path: 'platformId', select: 'name logoUrl' }]
       };

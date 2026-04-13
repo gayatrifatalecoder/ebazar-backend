@@ -142,7 +142,7 @@ const AdminController = {
 
   async getScraperJobs(req, res) {
     try {
-      const { page = 1, limit = 20 } = req.query;
+      const { page, limit } = req.query;
       const jobs = await ScraperJob.find()
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)

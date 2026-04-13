@@ -1,8 +1,25 @@
+const Joi = require('joi');
+
 const validate = (schema) => {
   return (req, res, next) => {
-    const { value, error } = schema.validate(req.body, { 
-      allowUnknown: true, 
-      abortEarly: false 
+    // Collect the exact schemas assigned (params, query, body)
+    const validSchema = {};
+    ['params', 'query', 'body'].forEach((key) => {
+      if (schema[key]) validSchema[key] = schema[key];
+    });
+
+    const joiSchema = Joi.object(validSchema);
+
+    // Pick only the incoming keys defined by the schema
+    const objectToValidate = {};
+    Object.keys(validSchema).forEach((key) => {
+      objectToValidate[key] = req[key];
+    });
+
+    const { value, error } = joiSchema.validate(objectToValidate, {
+      abortEarly: false,
+      allowUnknown: true, // Typically allow passing extra fields un-validated, or stripUnknown: true
+      stripUnknown: false
     });
 
     if (error) {
@@ -13,9 +30,9 @@ const validate = (schema) => {
       return res.status(400).json({ success: false, errors: errorDetails });
     }
 
-    // Coerce types based on Joi schema parsing
-    req.body = value;
-    next();
+    // Coerce parsed types back into express request object
+    Object.assign(req, value);
+    return next();
   };
 };
 
