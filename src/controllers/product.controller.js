@@ -10,103 +10,121 @@ const ProductController = {
    */
   async ingestScrapedProduct(req, res) {
     try {
-      const {
-        platform,        // "myntra"
-        product_name,    // "Round Neck T-Shirt"
-        url,             // "..."
-        image,           // "..."
-        original_price,  // ".799"
-        discounted_price,// ".463"
-        currency,        // "INR"
-        rating,          // "4.2|39"
-        category,        // "Fashion"
-        sub_category     // "Men's Top Wear"
-      } = req.body;
+      const { products } = req.body;
 
-      // 1. Clean numbers
-      const pOrig = parseFloat(original_price?.replace(/[^0-9.]/g, ''));
-      const pDisc = parseFloat(discounted_price?.replace(/[^0-9.]/g, ''));
-
-      // 2. Parse ratings
-      let parsedRating = 0, parsedReviews = 0;
-      if (rating && rating.includes('|')) {
-        const [r, c] = rating.split('|');
-        parsedRating = parseFloat(r) || 0;
-        parsedReviews = parseInt(c.replace(/[^0-9]/g, ''), 10) || 0;
+      if (!products || !Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ success: false, message: 'Invalid or empty products array.' });
       }
 
-      // 3. Resolve Platform
-      const platformDoc = await Platform.findOne({ name: new RegExp(platform, 'i') });
-      if (!platformDoc) {
-        return res.status(400).json({ success: false, message: `Platform '${platform}' not found in DB.` });
-      }
+      // 1. Fetch all Platforms and Categories to avoid per-product DB calls
+      const allPlatforms = await Platform.find({ isActive: true }).lean();
+      const allCategories = await Category.find({ isActive: true }).lean();
 
-      // 4. Resolve Category / Subcategory
-      let resolvedCategoryId;
-      let resolvedCategoryPath = [];
+      const bulkOps = [];
+      const errors = [];
 
-      // Quick slugify function (e.g. "Men's Top Wear" -> "mens-top-wear")
-      const makeSlug = (str) => str?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      for (const item of products) {
+        try {
+          const {
+            platform,
+            product_name,
+            url,
+            image,
+            original_price,
+            discounted_price,
+            currency,
+            rating,
+            category,
+            sub_category
+          } = item;
 
-      // Try to find exact subcategory first (we assume Python sends the parent slug inside the subcategory string based on how we seeded it, 
-      // or we just regex match the name)
-      if (sub_category) {
-        const subCatDoc = await Category.findOne({
-          level: 2,
-          name: new RegExp(sub_category, 'i')
-        });
+          // Clean numbers
+          const pOrig = parseFloat(original_price?.replace(/[^0-9.]/g, ''));
+          const pDisc = parseFloat(discounted_price?.replace(/[^0-9.]/g, ''));
 
-        if (subCatDoc) {
-          resolvedCategoryId = subCatDoc._id;
-          resolvedCategoryPath = subCatDoc.path;
+          // Parse ratings
+          let parsedRating = 0, parsedReviews = 0;
+          if (rating && String(rating).includes('|')) {
+            const [r, c] = String(rating).split('|');
+            parsedRating = parseFloat(r) || 0;
+            parsedReviews = parseInt(c.replace(/[^0-9]/g, ''), 10) || 0;
+          } else if (rating) {
+            parsedRating = parseFloat(rating) || 0;
+          }
+
+          // Resolve Platform (Case-insensitive)
+          const platformDoc = allPlatforms.find(p => p.name.toLowerCase() === platform.toLowerCase());
+          if (!platformDoc) {
+            errors.push({ url, error: `Platform '${platform}' not found.` });
+            continue;
+          }
+
+          // Resolve Category / Subcategory
+          let resolvedCategoryId;
+          let resolvedCategoryPath = [];
+
+          if (sub_category) {
+            const subCatDoc = allCategories.find(c => c.level === 2 && c.name.toLowerCase() === sub_category.toLowerCase());
+            if (subCatDoc) {
+              resolvedCategoryId = subCatDoc._id;
+              resolvedCategoryPath = subCatDoc.path;
+            }
+          }
+
+          if (!resolvedCategoryId && category) {
+            const parentCatDoc = allCategories.find(c => c.level === 1 && c.name.toLowerCase() === category.toLowerCase());
+            if (parentCatDoc) {
+              resolvedCategoryId = parentCatDoc._id;
+              resolvedCategoryPath = parentCatDoc.path;
+            }
+          }
+
+          if (!resolvedCategoryId) {
+            errors.push({ url, error: `Could not resolve category for '${category}' -> '${sub_category}'.` });
+            continue;
+          }
+
+          // Generate unique fingerprint
+          const fingerprintHash = crypto.createHash('md5').update(`${platformDoc._id}_${url}`).digest('hex');
+
+          const productPayload = {
+            platformId: platformDoc._id,
+            title: product_name,
+            productUrl: url,
+            primaryImageUrl: image,
+            imageUrls: image ? [image] : [],
+            originalPrice: pOrig,
+            price: pDisc,
+            currency: currency || 'INR',
+            rating: parsedRating,
+            reviewCount: parsedReviews,
+            categoryId: resolvedCategoryId,
+            categoryPath: resolvedCategoryPath,
+            productFingerprint: fingerprintHash,
+          };
+
+          bulkOps.push({
+            updateOne: {
+              filter: { productFingerprint: fingerprintHash },
+              update: { $set: productPayload },
+              upsert: true
+            }
+          });
+        } catch (itemErr) {
+          errors.push({ url: item.url, error: itemErr.message });
         }
       }
 
-      // Fallback A: If subcategory missed, attach to parent category directly
-      if (!resolvedCategoryId && category) {
-        const parentCatDoc = await Category.findOne({
-          level: 1,
-          name: new RegExp(category, 'i')
-        });
-
-        if (parentCatDoc) {
-          resolvedCategoryId = parentCatDoc._id;
-          resolvedCategoryPath = parentCatDoc.path;
-        }
+      if (bulkOps.length > 0) {
+        await Product.bulkWrite(bulkOps);
       }
 
-      // If STILL no category resolved, fallback to a fail-safe or reject
-      if (!resolvedCategoryId) {
-        return res.status(400).json({ success: false, message: `Could not resolve category for '${category}' -> '${sub_category}'.` });
-      }
-
-      // 5. Generate unique fingerprint to avoid duplicates
-      const fingerprintHash = crypto.createHash('md5').update(`${platformDoc._id}_${url}`).digest('hex');
-
-      // 6. Upsert the product
-      const productPayload = {
-        platformId: platformDoc._id,
-        title: product_name,
-        productUrl: url,
-        primaryImageUrl: image,
-        imageUrls: image ? [image] : [],
-        originalPrice: pOrig,
-        price: pDisc,
-        currency: currency || 'INR',
-        rating: parsedRating,
-        reviewCount: parsedReviews,
-        categoryId: resolvedCategoryId,
-        categoryPath: resolvedCategoryPath,
-        productFingerprint: fingerprintHash,
-      };
-
-      const updatedProduct = await Product.findOneAndUpdate(
-        { productFingerprint: fingerprintHash }, // Search by fingerprint
-        { $set: productPayload },               // Update data
-        { new: true, upsert: true }             // Insert if doesn't exist
-      );
-
-      return res.json({ success: true, data: updatedProduct });
+      return res.json({
+        success: true,
+        message: `Processed ${products.length} products.`,
+        insertedOrUpdated: bulkOps.length,
+        errors: errors.length > 0 ? errors : undefined
+      });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
     }

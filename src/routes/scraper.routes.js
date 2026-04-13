@@ -18,7 +18,7 @@ const router = express.Router();
  * @swagger
  * /scraper/products:
  *   post:
- *     summary: Ingest a newly scraped product from Python Service
+ *     summary: Ingest multiple scraped products from Python Service (Bulk)
  *     tags: [Scraper Setup]
  *     requestBody:
  *       required: true
@@ -27,29 +27,34 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               platform:
- *                 type: string
- *               product_name:
- *                 type: string
- *               url:
- *                 type: string
- *               image:
- *                 type: string
- *               original_price:
- *                 type: string
- *               discounted_price:
- *                 type: string
- *               currency:
- *                 type: string
- *               rating:
- *                 type: string
- *               category:
- *                 type: string
- *               sub_category:
- *                 type: string
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     platform:
+ *                       type: string
+ *                     product_name:
+ *                       type: string
+ *                     url:
+ *                       type: string
+ *                     image:
+ *                       type: string
+ *                     original_price:
+ *                       type: string
+ *                     discounted_price:
+ *                       type: string
+ *                     currency:
+ *                       type: string
+ *                     rating:
+ *                       type: string
+ *                     category:
+ *                       type: string
+ *                     sub_category:
+ *                       type: string
  *     responses:
  *       200:
- *         description: Product saved or updated successfully
+ *         description: Products processed and synced (Bulk results returned)
  */
 router.post('/products', validate(pythonScraperPayloadSchema), ProductController.ingestScrapedProduct);
 
