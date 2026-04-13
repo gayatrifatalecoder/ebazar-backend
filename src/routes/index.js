@@ -11,6 +11,7 @@ const router = express.Router();
 router.use('/admin', adminRoutes);
 router.use('/scraper', scraperRoutes);
 router.use('/categories', categoryRoutes);
+router.use('/products', require('./product.routes'));
 // router.use('/platforms', platformRoutes);
 // router.use('/webhooks', webhookRoutes);
 
