@@ -3,17 +3,75 @@ const CategoryController = require('../controllers/category.controller');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Categories
+ *   description: API to manage categories and mapping
+ */
+
 // ─── PUBLIC CATEGORY ROUTES ───────────────────────────────────────────────
-// Get all main categories (Level 1)
+
+/**
+ * @swagger
+ * /categories:
+ *   get:
+ *     summary: Get all main categories
+ *     tags: [Categories]
+ *     responses:
+ *       200:
+ *         description: List of main categories
+ */
 router.get('/', CategoryController.getAllCategories);
 
-// Get the full category tree
+/**
+ * @swagger
+ * /categories/tree:
+ *   get:
+ *     summary: Get full category tree
+ *     tags: [Categories]
+ *     responses:
+ *       200:
+ *         description: Full nested list of categories and subcategories
+ */
 router.get('/tree', CategoryController.getCategoryTree);
 
-// Get subcategories for a specific category ID
+/**
+ * @swagger
+ * /categories/{id}/subcategories:
+ *   get:
+ *     summary: Get subcategories by category ID
+ *     tags: [Categories]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The category ID
+ *     responses:
+ *       200:
+ *         description: List of subcategories
+ */
 router.get('/:id/subcategories', CategoryController.getSubcategories);
 
-// Get platforms associated with a specific category ID
+/**
+ * @swagger
+ * /categories/{id}/platforms:
+ *   get:
+ *     summary: Get platforms mapped to a Category ID
+ *     tags: [Categories]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The category ID
+ *     responses:
+ *       200:
+ *         description: List of mapped platforms
+ */
 router.get('/:id/platforms', CategoryController.getPlatformsByCategory);
 
 module.exports = router;

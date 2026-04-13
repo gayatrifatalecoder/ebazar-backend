@@ -7,8 +7,13 @@ const rateLimit = require('express-rate-limit');
 const config = require('./config');
 const logger = require('./utils/logger');
 const routes = require('./routes');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./utils/swagger');
 
 const app = express();
+
+// ─── SWAGGER DOCS ─────────────────────────────────────────────────────────
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // ─── SECURITY ─────────────────────────────────────────────────────────────
 app.set('trust proxy', 1);
