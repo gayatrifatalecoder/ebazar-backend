@@ -3,17 +3,13 @@ const SYSTEM_CATEGORIES = [
     id: 1,
     name: "Fashion",
     subcategories: [
-      "Men's Clothing",
-      "Women's Clothing",
-      "Kids' Clothing",
+      "Topwear",
+      "Bottomwear",
       "Ethnic Wear",
-      "Winterwear",
+      "Activewear",
+      "Innerwear",
       "Footwear",
-      "Bags & Luggage",
-      "Watches",
-      "Fashion Jewellery",
-      "Sunglasses & Eyewear",
-      "Activewear & Innerwear"
+      "Accessories"
     ]
   },
   {
@@ -22,12 +18,11 @@ const SYSTEM_CATEGORIES = [
     subcategories: [
       "Skin Care",
       "Hair Care",
-      "Makeup & Cosmetics",
+      "Makeup",
       "Fragrances",
       "Personal Hygiene",
-      "Grooming Tools",
-      "Beauty Devices",
-      "Oral Care"
+      "Oral Care",
+      "Beauty Tools & Devices"
     ]
   },
   {
@@ -35,7 +30,7 @@ const SYSTEM_CATEGORIES = [
     name: "Health & Wellness",
     subcategories: [
       "Health Supplements",
-      "Ayurvedic & Herbal Products",
+      "Herbal & Ayurvedic",
       "Wellness Drinks",
       "Sexual Wellness",
       "Medical Devices",
@@ -47,41 +42,41 @@ const SYSTEM_CATEGORIES = [
     name: "Electronics",
     subcategories: [
       "Smartphones & Tablets",
-      "Laptops & Computers",
-      "Mobile Accessories",
-      "Audio Devices",
+      "Computers & Laptops",
+      "Audio",
       "Wearables",
       "Cameras & Accessories",
       "Gaming",
-      "Smart Devices",
-      "Large Appliances"
+      "Smart Home Devices",
+      "Large Appliances",
+      "Accessories"
     ]
   },
   {
     id: 5,
     name: "Home & Kitchen",
     subcategories: [
+      "Furniture",
       "Home Decor & Furnishing",
       "Kitchen Appliances",
-      "Cookware & Utensils",
-      "Furniture",
+      "Cookware & Dining",
       "Cleaning & Laundry",
       "Storage & Organization",
       "Bathroom & Sanitary",
-      "Home Improvement & Tools"
+      "Home Tools & Improvement"
     ]
   },
   {
     id: 6,
     name: "Grocery",
     subcategories: [
-      "Packaged Food",
+      "Staples & Packaged Food",
       "Dairy & Bakery",
       "Beverages",
       "Fruits & Vegetables",
+      "Snacks & Confectionery",
       "Organic & Health Foods",
-      "Household Essentials",
-      "Snacks & Confectionery"
+      "Household Essentials"
     ]
   },
   {
@@ -89,20 +84,20 @@ const SYSTEM_CATEGORIES = [
     name: "Sports & Fitness",
     subcategories: [
       "Fitness Equipment",
-      "Sports Accessories",
+      "Sports Equipment",
       "Outdoor Gear",
-      "Health & Recovery"
+      "Recovery & Support"
     ]
   },
   {
     id: 8,
     name: "Baby & Kids",
     subcategories: [
-      "Baby Clothing",
+      "Baby Apparel",
       "Baby Care",
       "Baby Gear",
       "School Essentials",
-      "Maternity & Mom Care"
+      "Maternity Care"
     ]
   },
   {
@@ -112,8 +107,8 @@ const SYSTEM_CATEGORIES = [
       "Gift Hampers",
       "Personalized Gifts",
       "Flowers & Cakes",
-      "Soft Toys",
-      "Toys & Games"
+      "Toys & Games",
+      "Soft Toys"
     ]
   },
   {
@@ -121,7 +116,7 @@ const SYSTEM_CATEGORIES = [
     name: "Pets",
     subcategories: [
       "Pet Food",
-      "Pet Grooming",
+      "Pet Care & Grooming",
       "Pet Accessories",
       "Pet Supplements"
     ]
@@ -133,12 +128,9 @@ const SYSTEM_CATEGORIES = [
       "Flights",
       "Hotels",
       "Bus & Train",
-      "Cab Booking",
+      "Cab & Local Transport",
       "Travel Packages",
-      "Bill Payments",
-      "Mobile Recharge",
-      "Subscriptions",
-      "Banking"
+      "Financial Services"
     ]
   }
 ];

@@ -1,0 +1,128 @@
+{
+  "info": {
+    "_postman_id": "b3e34b12-9c1a-4d6b-b892-91f868ac1b2d",
+    "name": "Ebazar Categories API",
+    "description": "Endpoints to fetch Categories, Subcategories, and hierarchical mappings built utilizing the fast Adjacency List Database Architecture.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Get All Categories (Level 1)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "categories"
+          ]
+        },
+        "description": "Fetches only the Root/Level 1 Categories (e.g., Fashion, Beauty & Personal Care). Perfect for loading the main sidebar or navbar."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Get Subcategories by Parent ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/:id/subcategories",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "categories",
+            ":id",
+            "subcategories"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "ENTER_PARENT_CATEGORY_ID_HERE",
+              "description": "The MongoDB _id of the parent category (e.g. ID of 'Fashion')"
+            }
+          ]
+        },
+        "description": "Pass the `_id` of a Level 1 Category here to instantly get all of its direct Subcategory children without any nested joins."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Get Full Category Payload Tree",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/tree",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "categories",
+            "tree"
+          ]
+        },
+        "description": "Returns the complete Categories array natively populated with a `subcategories` array inside each object. Best payload for the Python Category Inference Service."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Get Platforms by Category ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/categories/:id/platforms",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "categories",
+            ":id",
+            "platforms"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "ENTER_CATEGORY_ID_HERE",
+              "description": "The MongoDB _id of either a Category or Subcategory."
+            }
+          ]
+        },
+        "description": "Searches for all active Platforms (Myntra, Alibaba, etc) that have been configured to map into this specific system Category."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    }
+  ]
+}

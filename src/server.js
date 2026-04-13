@@ -13,6 +13,10 @@ const startServer = async () => {
     // 1. Connect to DB
     await connect();
 
+    // Seed Categories if empty
+    const { seedCategories } = require('./jobs/seedCategories');
+    await seedCategories();
+
     // 2. Init Cron schedules
     initCronJobs();
 

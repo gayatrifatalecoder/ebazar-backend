@@ -35,14 +35,20 @@ const ProductSchema = new mongoose.Schema({
   },
 
   // Category — manually mapped at scraper/backend level
-  // Maps to INRDeals commissionSlabs label for correct gold calculation
-  category: {
-    type: String,
+  // Category — now references the Category ObjectId
+  // Links specifically to the deepest category node (e.g. Topwear)
+  categoryId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
     required: true,
     index: true,
-    // e.g. "fashion", "beauty", "home", "footwear", "kids", "jewellery"
   },
-  subcategory: { type: String },
+  // Array of ObjectIds to instantly find products in any parent branch
+  categoryPath: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    index: true
+  }],
 
   // Commission slab mapping — which INRDeals slab applies to this product
   // Matched from Platform.commissionSlabs based on category
