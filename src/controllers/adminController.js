@@ -1,5 +1,5 @@
 const Platform = require('../models/Platform');
-const Product = require('../models/Product');
+const Product = require('../models/Products');
 const { AdminConfig, ScraperJob } = require('../models/AdminConfig');
 const { Transaction } = require('../models/AffiliateClick');
 const CampaignSyncService = require('../services/campaignSyncService');

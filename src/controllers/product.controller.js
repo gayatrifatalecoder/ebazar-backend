@@ -1,4 +1,4 @@
-const Product = require('../models/Product');
+const Product = require('../models/Products');
 const Category = require('../models/Category');
 const Platform = require('../models/Platform');
 const crypto = require('crypto');
@@ -26,7 +26,7 @@ const ProductController = {
       // 1. Clean numbers
       const pOrig = parseFloat(original_price?.replace(/[^0-9.]/g, ''));
       const pDisc = parseFloat(discounted_price?.replace(/[^0-9.]/g, ''));
-      
+
       // 2. Parse ratings
       let parsedRating = 0, parsedReviews = 0;
       if (rating && rating.includes('|')) {
@@ -44,16 +44,16 @@ const ProductController = {
       // 4. Resolve Category / Subcategory
       let resolvedCategoryId;
       let resolvedCategoryPath = [];
-      
+
       // Quick slugify function (e.g. "Men's Top Wear" -> "mens-top-wear")
       const makeSlug = (str) => str?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
       // Try to find exact subcategory first (we assume Python sends the parent slug inside the subcategory string based on how we seeded it, 
       // or we just regex match the name)
       if (sub_category) {
-        const subCatDoc = await Category.findOne({ 
-          level: 2, 
-          name: new RegExp(sub_category, 'i') 
+        const subCatDoc = await Category.findOne({
+          level: 2,
+          name: new RegExp(sub_category, 'i')
         });
 
         if (subCatDoc) {
@@ -119,7 +119,7 @@ const ProductController = {
   async getTopProducts(req, res) {
     try {
       const limit = req.query.limit;
-      
+
       // Top products definition: isActive = true, and sort by either featured, trending, or highest discount
       const topProducts = await Product.find({ isActive: true })
         .sort({ isFeatured: -1, isTrending: -1, discountPercent: -1 })

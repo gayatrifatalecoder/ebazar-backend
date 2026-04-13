@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const crypto = require('crypto');
-const Product = require('../models/Product');
+const Product = require('../models/Products');
 const { ScraperJob } = require('../models/AdminConfig');
 const logger = require('../utils/logger');
 
