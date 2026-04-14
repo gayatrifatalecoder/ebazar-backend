@@ -20,7 +20,7 @@ const RewardHighlightService = {
     const platforms = await Platform.find({ 
       isActive: true, 
       'goldRewardRules.region': region 
-    }).select('name goldRewardRules').lean();
+    }).select('name logoUrl goldRewardRules').lean();
 
     const highlights = {};
 
@@ -36,8 +36,11 @@ const RewardHighlightService = {
         
         if (!highlights[catId] || this.isBetterReward(rule, highlights[catId].rule)) {
           highlights[catId] = {
-            label,
-            platformName: platform.name,
+            badge: label,
+            bestPlatform: {
+              name: platform.name,
+              logo: platform.logoUrl
+            },
             rule: {
               type: rule.rewardType,
               value: rule.rewardValue
@@ -47,9 +50,15 @@ const RewardHighlightService = {
       });
     });
 
-    // 3. Flatten for API response
+    // 3. Clean up and cache
     const result = Object.fromEntries(
-      Object.entries(highlights).map(([catId, data]) => [catId, data.label])
+      Object.entries(highlights).map(([catId, data]) => [
+        catId, 
+        { 
+          maxGoldBadge: data.badge, 
+          bestPlatform: data.bestPlatform 
+        }
+      ])
     );
 
     await cache.set(cacheKey, result, 3600); // 1 hour cache
@@ -68,22 +77,44 @@ const RewardHighlightService = {
   },
 
   /**
-   * Comparison logic to determine which reward is 'Better' for the badge
-   * Percentages are compared directly. Fixed values are harder but we prioritize higher numbers.
+   * Helper to determine which reward is 'Better' 
    */
   isBetterReward(newRule, existingRule) {
     if (!existingRule) return true;
-    
-    // Percentage vs Percentage
-    if (newRule.rewardType === 'percentage_of_commission' && existingRule.type === 'percentage_of_commission') {
-      return newRule.rewardValue > existingRule.value;
+    return newRule.rewardValue > (existingRule.rewardValue || existingRule.value || 0);
+  },
+
+  /**
+   * Get the best gold reward badge for a specific platform object
+   */
+  getPlatformBadge(platform, region = 'IN') {
+    // 1. Check custom rules first
+    if (platform.goldRewardRules && platform.goldRewardRules.length > 0) {
+      const activeRules = platform.goldRewardRules.filter(r => r.region === region && r.isActive);
+      if (activeRules.length > 0) {
+        let bestRule = activeRules[0];
+        activeRules.forEach(r => {
+          if (this.isBetterReward(r, bestRule)) bestRule = r;
+        });
+        return this.formatRewardLabel(bestRule);
+      }
     }
-    
-    // Grams are always highlighted well
-    if (newRule.rewardType === 'fixed_grams') return true;
-    
-    // Simple fallback: Higher value is usually better UI
-    return newRule.rewardValue > existingRule.value;
+
+    // 2. Fallback to default payout calculation
+    const payoutStr = platform.tier?.payout;
+    if (payoutStr) {
+      // Try to extract number from "Flat 3.6%" or "Up to 10%"
+      const match = payoutStr.match(/(\d+(\.\d+)?)/);
+      if (match) {
+        const val = parseFloat(match[1]);
+        const share = platform.goldConfig?.defaultGoldPercent || 10;
+        const reward = (val * (share / 100)).toFixed(2);
+        return `${reward}% Gold`;
+      }
+      return `${payoutStr} Reward`;
+    }
+
+    return null;
   }
 };
 

@@ -15,10 +15,14 @@ const CategoryController = {
         RewardHighlightService.getCategoryHighlights(region)
       ]);
 
-      const data = categories.map(cat => ({
-        ...cat,
-        maxGoldReward: highlights[cat._id.toString()] || null
-      }));
+      const data = categories.map(cat => {
+        const h = highlights[cat._id.toString()];
+        return {
+          ...cat,
+          maxGoldBadge: h ? h.maxGoldBadge : null,
+          bestPlatform: h ? h.bestPlatform : null
+        };
+      });
 
       res.json({ success: true, data });
     } catch (err) {
@@ -74,7 +78,9 @@ const CategoryController = {
       ]);
 
       tree.forEach(cat => {
-        cat.maxGoldReward = highlights[cat._id.toString()] || null;
+        const h = highlights[cat._id.toString()];
+        cat.maxGoldBadge = h ? h.maxGoldBadge : null;
+        cat.bestPlatform = h ? h.bestPlatform : null;
         if (cat.subcategories) {
           cat.subcategories.sort((a, b) => a.displayOrder - b.displayOrder);
         }
