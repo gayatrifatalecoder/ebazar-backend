@@ -21,10 +21,18 @@ const AffiliateClickSchema = new mongoose.Schema({
   },
   inrDealsId: { type: String, required: true }, // platform's INRDeals ID
 
-  // Commission data at time of click (snapshot — rates can change)
+  // Commission data at time of click (Snapshot - important for multi-region)
   commissionSlabLabel: { type: String },
   commissionPercent: { type: Number },
-  goldPercent: { type: Number },           // platform's goldConfig.defaultGoldPercent
+  
+  region: { type: String, enum: ['IN', 'AE'], default: 'IN' },
+  rewardType: { 
+    type: String, 
+    enum: ['percentage_of_commission', 'fixed_amount', 'fixed_grams'], 
+    default: 'percentage_of_commission' 
+  },
+  rewardValue: { type: Number }, // Snapshot of the promised value
+  currency: { type: String, enum: ['INR', 'AED', 'GRAMS'] },
 
   // Link
   ref: { type: String, required: true, unique: true, index: true }, // our tracking ref
@@ -90,8 +98,12 @@ const TransactionSchema = new mongoose.Schema({
   commissionAmount: { type: Number },     // orderValue * commissionPercent / 100
 
   // Gold calculation
-  goldPercent: { type: Number },          // % of commissionAmount given as gold
-  goldAmount: { type: Number },           // final gold to credit
+  rewardType: { type: String },
+  rewardValue: { type: Number },          // Snapshot value used for calculation
+  goldPercent: { type: Number },          // For percentage_of_commission cases
+  goldAmount: { type: Number },           // Final gold value in local currency (INR/AED)
+  goldGrams: { type: Number },            // Weight in grams (if applicable)
+  region: { type: String, enum: ['IN', 'AE'] },
 
   // Gold reward status
   goldStatus: {

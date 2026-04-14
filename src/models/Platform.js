@@ -18,6 +18,35 @@ const CommissionSlabSchema = new mongoose.Schema({
 }, { _id: false });
 
 /**
+ * Ebazar Gold Reward Rule
+ * Defines how much gold to give back for a specific INRDeals slab in a specific region
+ */
+const GoldRewardRuleSchema = new mongoose.Schema({
+  region: { 
+    type: String, 
+    enum: ['IN', 'AE'], 
+    required: true, 
+    index: true 
+  }, // India or UAE
+  slabLabel: { type: String, required: true }, // Links to platform.tier.slabs[].label
+  systemCategoryId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Category',
+    index: true
+  }, // Map to our 11 categories for UI badges
+  
+  rewardType: { 
+    type: String, 
+    enum: ['percentage_of_commission', 'fixed_amount', 'fixed_grams'], 
+    default: 'percentage_of_commission' 
+  },
+  rewardValue: { type: Number, required: true }, // 10 (%) or 50 (INR/AED) or 0.001 (g)
+  currency: { type: String, enum: ['INR', 'AED', 'GRAMS'], default: 'INR' },
+  
+  isActive: { type: Boolean, default: true }
+}, { _id: false });
+
+/**
  * Platform = one store/brand on INRDeals (e.g. Myntra, Nykaa)
  */
 const PlatformSchema = new mongoose.Schema({
@@ -34,7 +63,7 @@ const PlatformSchema = new mongoose.Schema({
   defaultUrl: { type: String },
   cookieDuration: { type: String },                   // "30"
   clickAttribution: { type: String, default: 'last' },
-  
+
   // Custom Regions & Type
   regions: [{
     code: String,
@@ -94,6 +123,9 @@ const PlatformSchema = new mongoose.Schema({
   displayOrder: { type: Number, default: 0, index: true }, // lower = shown first
   isActive: { type: Boolean, default: true, index: true }, // whether it shows in FRONTEND
   isFeatured: { type: Boolean, default: false },
+
+  // Admin-defined rules for how much GOLD to give back from each slab (Region-Aware)
+  goldRewardRules: [GoldRewardRuleSchema],
 
   // Gold config 
   goldConfig: {

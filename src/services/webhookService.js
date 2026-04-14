@@ -79,8 +79,23 @@ const WebhookService = {
     const platform = await Platform.findById(click.platformId).lean();
     const commissionPercent = click.commissionPercent || 0;
     const commissionAmount = (orderValue * commissionPercent) / 100;
-    const goldPercent = click.goldPercent || 10;
-    const goldAmount = parseFloat(((commissionAmount * goldPercent) / 100).toFixed(2));
+    
+    let goldAmount = 0;
+    let goldGrams = 0;
+    let goldPercent = 0;
+
+    if (click.rewardType === 'fixed_amount') {
+      goldAmount = click.rewardValue || 0;
+    } else if (click.rewardType === 'fixed_grams') {
+      goldGrams = click.rewardValue || 0;
+      // Note: In a production system, you might want to convert grams to INR/AED 
+      // based on CURRENT gold price here for reporting, but let's store the weight.
+      goldAmount = 0; 
+    } else {
+      // Default: percentage_of_commission
+      goldPercent = click.rewardValue || 10;
+      goldAmount = parseFloat(((commissionAmount * goldPercent) / 100).toFixed(2));
+    }
 
     // Create transaction record
     const transaction = await Transaction.create({
@@ -95,8 +110,12 @@ const WebhookService = {
       commissionSlabLabel: click.commissionSlabLabel,
       commissionPercent,
       commissionAmount,
+      rewardType: click.rewardType,
+      rewardValue: click.rewardValue,
       goldPercent,
       goldAmount,
+      goldGrams,
+      region: click.region,
       goldStatus: status === 'confirmed' ? 'pending' : 'processing',
       inrDealsStatus: status,
       webhookPayload: payload,
@@ -111,13 +130,17 @@ const WebhookService = {
     });
 
     // Queue gold credit only for confirmed purchases
-    if (status === 'confirmed' && goldAmount > 0) {
+    if (status === 'confirmed' && (goldAmount > 0 || goldGrams > 0)) {
       await queues.goldCredits.add(
         'credit-gold',
         {
           transactionId: transaction._id.toString(),
           userId: click.userId,
           goldAmount,
+          goldGrams,
+          rewardType: click.rewardType,
+          region: click.region,
+          currency: click.currency,
           platformName: platform?.name,
           inrDealsRef,
         },

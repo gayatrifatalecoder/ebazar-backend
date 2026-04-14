@@ -9,11 +9,16 @@ const CategorySchema = new mongoose.Schema({
   isLeaf: { type: Boolean, default: false },
   isActive: { type: Boolean, default: true },
   displayOrder: { type: Number, default: 0 },
-  icon: { type: String } // Optional icon URL for frontend
+
+
+  // Visual Assets
+  icon: { type: String },       // Optional icon URL for frontend
+  imageUrl: { type: String }   // Optional high-res banner image URL
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
+
 });
 
 // Indexes for high-performance Adjacency List querying

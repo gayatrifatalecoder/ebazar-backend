@@ -40,12 +40,13 @@ const AdminController = {
    */
   async updatePlatform(req, res) {
     try {
-      const { displayOrder, isActive, isFeatured, goldConfig, logoUrl, systemCategoryMappings } = req.body;
+      const { displayOrder, isActive, isFeatured, goldConfig, goldRewardRules, logoUrl, systemCategoryMappings } = req.body;
       const update = {};
       if (displayOrder !== undefined) update.displayOrder = displayOrder;
       if (isActive !== undefined) update.isActive = isActive;
       if (isFeatured !== undefined) update.isFeatured = isFeatured;
       if (goldConfig !== undefined) update.goldConfig = goldConfig;
+      if (goldRewardRules !== undefined) update.goldRewardRules = goldRewardRules;
       if (logoUrl !== undefined) update.logoUrl = logoUrl;
       if (systemCategoryMappings !== undefined) update.systemCategoryMappings = systemCategoryMappings;
 

@@ -1,5 +1,6 @@
 const Category = require('../models/Category');
 const Platform = require('../models/Platform');
+const RewardHighlightService = require('../services/rewardHighlightService');
 
 const CategoryController = {
   /**
@@ -8,11 +9,18 @@ const CategoryController = {
    */
   async getAllCategories(req, res) {
     try {
-      const categories = await Category.find({ level: 1, isActive: true })
-        .sort('displayOrder')
-        .lean();
+      const region = req.query.region || 'IN'; // Get region from query or default
+      const [categories, highlights] = await Promise.all([
+        Category.find({ level: 1, isActive: true }).sort('displayOrder').lean(),
+        RewardHighlightService.getCategoryHighlights(region)
+      ]);
 
-      res.json({ success: true, data: categories });
+      const data = categories.map(cat => ({
+        ...cat,
+        maxGoldReward: highlights[cat._id.toString()] || null
+      }));
+
+      res.json({ success: true, data });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
@@ -47,23 +55,26 @@ const CategoryController = {
    */
   async getCategoryTree(req, res) {
     try {
-      // Aggregate approach to nest level 2 inside level 1
-      const tree = await Category.aggregate([
-        { $match: { level: 1, isActive: true } },
-        { $sort: { displayOrder: 1 } },
-        {
-          $lookup: {
-            from: 'categories', // The collection name in MongoDB for Category model
-            localField: '_id',
-            foreignField: 'parentId',
-            as: 'subcategories'
+      const region = req.query.region || 'IN';
+      
+      const [tree, highlights] = await Promise.all([
+        Category.aggregate([
+          { $match: { level: 1, isActive: true } },
+          { $sort: { displayOrder: 1 } },
+          {
+            $lookup: {
+              from: 'categories',
+              localField: '_id',
+              foreignField: 'parentId',
+              as: 'subcategories'
+            }
           }
-        },
-        // Sort subcategories (nested sort requires a slightly more complex pipeline, but mapping after is easier for few documents)
+        ]),
+        RewardHighlightService.getCategoryHighlights(region)
       ]);
 
-      // Manual sort for subcategories in memory (only 11 arrays of ~8 items max)
       tree.forEach(cat => {
+        cat.maxGoldReward = highlights[cat._id.toString()] || null;
         if (cat.subcategories) {
           cat.subcategories.sort((a, b) => a.displayOrder - b.displayOrder);
         }

@@ -18,6 +18,7 @@ const AffiliateLinkService = {
    * Returns: { affiliateUrl, ref, estimatedGold }
    */
   async generateLink(userId, productId, meta = {}) {
+    const region = meta.region || 'IN'; // Default to India if not provided
     const product = await Product.findById(productId).lean();
     if (!product || !product.isActive) {
       throw new Error('Product not found or inactive');
@@ -28,10 +29,11 @@ const AffiliateLinkService = {
       throw new Error('Platform not found or inactive');
     }
 
-    // Resolve gold percent for this platform/slab
-    const goldPercent = await this.resolveGoldPercent(
+    // Resolve gold rule for this platform/slab/region
+    const goldRule = await this.resolveGoldRule(
       platform._id,
-      product.commissionSlabLabel
+      product.commissionSlabLabel,
+      region
     );
 
     // Generate unique ref for this click
@@ -58,7 +60,10 @@ const AffiliateLinkService = {
       inrDealsId: platform.inrDealsId,
       commissionSlabLabel: product.commissionSlabLabel,
       commissionPercent: product.commissionPercent,
-      goldPercent,
+      region,
+      rewardType: goldRule.rewardType,
+      rewardValue: goldRule.rewardValue,
+      currency: goldRule.currency,
       ref,
       generatedUrl: affiliateUrl,
       originalProductUrl: product.productUrl,
@@ -70,7 +75,7 @@ const AffiliateLinkService = {
     const estimatedGoldRange = this.estimateGold(
       product.price,
       product.commissionPercent,
-      goldPercent
+      goldRule
     );
 
     return {
@@ -81,57 +86,83 @@ const AffiliateLinkService = {
   },
 
   /**
-   * Resolve gold percent for a platform + slab combo
-   * Priority: specific rule → platform default → global default
+   * Resolve gold rule for a platform + slab + region combo
+   * Priority: Platform Specific Region Rule -> Platform Default -> Global Default
    */
-  async resolveGoldPercent(platformId, slabLabel) {
-    const cacheKey = `ebazar:gold_pct:${platformId}:${slabLabel}`;
+  async resolveGoldRule(platformId, slabLabel, region) {
+    const cacheKey = `ebazar:gold_rule:${platformId}:${slabLabel}:${region}`;
     const cached = await cache.get(cacheKey);
-    if (cached !== null) return cached;
+    if (cached) return cached;
 
-    const adminConfig = await AdminConfig.findOne({ key: 'global' }).lean();
-    if (!adminConfig) return 10; // fallback
-
-    // Try specific rule for platform + slab
-    const specificRule = adminConfig.goldRules?.find(r =>
-      r.platformId?.toString() === platformId.toString() &&
-      r.commissionSlabLabel === slabLabel &&
+    const platform = await Platform.findById(platformId).lean();
+    
+    // 1. Try to find a specific rule for this slab and region
+    const specificRule = platform?.goldRewardRules?.find(r => 
+      r.region === region && 
+      r.slabLabel === slabLabel && 
       r.isActive
     );
+
     if (specificRule) {
-      await cache.set(cacheKey, specificRule.goldPercent, 300);
-      return specificRule.goldPercent;
+      const rule = {
+        rewardType: specificRule.rewardType,
+        rewardValue: specificRule.rewardValue,
+        currency: specificRule.currency
+      };
+      await cache.set(cacheKey, rule, 600);
+      return rule;
     }
 
-    // Try platform-level rule
-    const platformRule = adminConfig.goldRules?.find(r =>
-      r.platformId?.toString() === platformId.toString() &&
-      !r.commissionSlabLabel &&
+    // 2. Try to find a default rule for this region on the platform (if any)
+    const platformDefault = platform?.goldRewardRules?.find(r => 
+      r.region === region && 
       r.isActive
     );
-    if (platformRule) {
-      await cache.set(cacheKey, platformRule.goldPercent, 300);
-      return platformRule.goldPercent;
+
+    if (platformDefault) {
+      const rule = {
+        rewardType: platformDefault.rewardType,
+        rewardValue: platformDefault.rewardValue,
+        currency: platformDefault.currency
+      };
+      await cache.set(cacheKey, rule, 600);
+      return rule;
     }
 
-    const defaultPct = adminConfig.defaultGoldPercent || 10;
-    await cache.set(cacheKey, defaultPct, 300);
-    return defaultPct;
+    // 3. Fallback to global defaults (backward compatibility)
+    const adminConfig = await AdminConfig.findOne({ key: 'global' }).lean();
+    const globalDefaultPct = adminConfig?.defaultGoldPercent || 10;
+    
+    return {
+      rewardType: 'percentage_of_commission',
+      rewardValue: globalDefaultPct,
+      currency: region === 'IN' ? 'INR' : 'AED'
+    };
   },
 
   /**
    * Estimate gold user will earn
-   * Gold = orderValue × commissionPercent/100 × goldPercent/100
-   * We return a range since we don't know exact order value at click time
+   * Supports: Percentages, Fixed Weights (Grams), and Fixed Amounts
    */
-  estimateGold(productPrice, commissionPercent, goldPercent) {
-    if (!commissionPercent || !goldPercent) return { min: 0, max: 0 };
+  estimateGold(productPrice, commissionPercent, goldRule) {
+    const { rewardType, rewardValue, currency } = goldRule;
+
+    if (rewardType === 'fixed_amount') {
+      return { min: rewardValue, max: rewardValue, exact: rewardValue, unit: currency };
+    }
+
+    if (rewardType === 'fixed_grams') {
+      return { min: rewardValue, max: rewardValue, exact: rewardValue, unit: 'gGold' };
+    }
+
+    // Default Percent logic
     const commission = (productPrice * commissionPercent) / 100;
-    const gold = (commission * goldPercent) / 100;
+    const gold = (commission * rewardValue) / 100;
     return {
-      min: Math.floor(gold * 0.8), // account for validation rate
+      min: Math.floor(gold * 0.8),
       max: Math.ceil(gold),
       exact: parseFloat(gold.toFixed(2)),
+      unit: currency
     };
   },
 

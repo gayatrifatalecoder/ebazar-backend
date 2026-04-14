@@ -9,19 +9,27 @@ const updatePlatformSchema = {
     isActive: Joi.boolean().optional(),
     isFeatured: Joi.boolean().optional(),
     logoUrl: Joi.string().uri().optional(),
+    goldRewardRules: Joi.array().items(
+      Joi.object({
+        region: Joi.string().valid('IN', 'AE').required(),
+        slabLabel: Joi.string().required(),
+        systemCategoryId: Joi.string().hex().length(24).allow(null).optional(),
+        rewardType: Joi.string().valid('percentage_of_commission', 'fixed_amount', 'fixed_grams').required(),
+        rewardValue: Joi.number().required(),
+        currency: Joi.string().valid('INR', 'AED', 'GRAMS').optional(),
+        isActive: Joi.boolean().optional()
+      })
+    ).optional(),
     goldConfig: Joi.object({
-      baseCommissionPercent: Joi.number().min(0).max(100).required(),
-      goldRules: Joi.array().items(
-        Joi.object({
-          thresholdAmount: Joi.number().required(),
-          goldRewardPercent: Joi.number().required()
-        })
-      ).optional()
+      defaultGoldPercent: Joi.number().min(0).max(100).optional(),
+      isGoldEnabled: Joi.boolean().optional()
     }).optional(),
     systemCategoryMappings: Joi.array().items(
       Joi.object({
-        platformSlabMatches: Joi.array().items(Joi.string()).required(),
-        systemCategory: Joi.string().required()
+        slabLabel: Joi.string().required(),
+        systemCategory: Joi.string().required(),
+        systemSubcategory: Joi.string().optional(),
+        isActive: Joi.boolean().optional()
       })
     ).optional()
   })
@@ -62,12 +70,17 @@ const updateGoldRulesSchema = {
     defaultGoldPercent: Joi.number().min(0).max(100).optional(),
     goldRules: Joi.array().items(
       Joi.object({
-        thresholdAmount: Joi.number().required(),
-        goldRewardPercent: Joi.number().required()
+        platformId: Joi.string().hex().length(24).optional(),
+        commissionSlabLabel: Joi.string().optional(),
+        goldPercent: Joi.number().required(),
+        isActive: Joi.boolean().optional()
       })
     ).optional(),
     categoryMappings: Joi.array().optional(),
-    flags: Joi.object().optional()
+    flags: Joi.object({
+      scrapingEnabled: Joi.boolean(),
+      goldEnabled: Joi.boolean()
+    }).optional()
   })
 };
 
