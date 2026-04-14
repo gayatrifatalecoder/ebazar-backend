@@ -10,10 +10,8 @@ const CategorySchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true },
   displayOrder: { type: Number, default: 0 },
 
-
   // Visual Assets
-  icon: { type: String },       // Optional icon URL for frontend
-  imageUrl: { type: String }   // Optional high-res banner image URL
+  image: { type: String }   // Banner/Category image URL
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
