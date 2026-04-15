@@ -20,7 +20,7 @@ const PlatformController = {
         page: parseInt(page),
         limit: parseInt(limit),
         sort: { displayOrder: 1, name: 1 },
-        select: 'name slug logoUrl tier.payout goldRewardRules goldConfig isFeatured',
+        select: 'name slug logoUrl store.logo_url tier.payout tier.slabs goldRewardRules goldConfig isFeatured',
         lean: true
       };
 

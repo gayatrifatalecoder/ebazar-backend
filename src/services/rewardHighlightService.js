@@ -17,9 +17,9 @@ const RewardHighlightService = {
     if (cached) return cached;
 
     // 1. Fetch all platforms with their rules
-    const platforms = await Platform.find({ 
-      isActive: true, 
-      'goldRewardRules.region': region 
+    const platforms = await Platform.find({
+      isActive: true,
+      'goldRewardRules.region': region
     }).select('name logoUrl goldRewardRules').lean();
 
     const highlights = {};
@@ -30,10 +30,10 @@ const RewardHighlightService = {
         if (rule.region !== region || !rule.isActive || !rule.systemCategoryId) return;
 
         const catId = rule.systemCategoryId.toString();
-        
+
         // Build the display label (e.g., "12% Gold", "₹50 Reward", "0.01g Gold")
         const label = this.formatRewardLabel(rule);
-        
+
         if (!highlights[catId] || this.isBetterReward(rule, highlights[catId].rule)) {
           highlights[catId] = {
             badge: label,
@@ -53,10 +53,10 @@ const RewardHighlightService = {
     // 3. Clean up and cache
     const result = Object.fromEntries(
       Object.entries(highlights).map(([catId, data]) => [
-        catId, 
-        { 
-          maxGoldBadge: data.badge, 
-          bestPlatform: data.bestPlatform 
+        catId,
+        {
+          maxGoldBadge: data.badge,
+          bestPlatform: data.bestPlatform
         }
       ])
     );
@@ -85,36 +85,70 @@ const RewardHighlightService = {
   },
 
   /**
-   * Get the best gold reward badge for a specific platform object
+   * Get the best gold reward badge for a specific platform object.
+   * Handles all INRDeals slab types:
+   *  - Flat Rate (percentage)
+   *  - Fixed Amount (Rs.X fixed)
+   *  - Price Range (multiple commission tiers per slab)
+   *  - Category-Based / New-Old User Split (multiple slabs, each with %)
    */
   getPlatformBadge(platform, region = 'IN') {
-    // 1. Check custom rules first
-    if (platform.goldRewardRules && platform.goldRewardRules.length > 0) {
-      const activeRules = platform.goldRewardRules.filter(r => r.region === region && r.isActive);
-      if (activeRules.length > 0) {
-        let bestRule = activeRules[0];
-        activeRules.forEach(r => {
-          if (this.isBetterReward(r, bestRule)) bestRule = r;
-        });
-        return this.formatRewardLabel(bestRule);
-      }
-    }
+    const slabs = platform.tier?.slabs || [];
+    const defaultShare = platform.goldConfig?.defaultGoldPercent || 0;
 
-    // 2. Fallback to default payout calculation
-    const payoutStr = platform.tier?.payout;
-    if (payoutStr) {
-      // Try to extract number from "Flat 3.6%" or "Up to 10%"
-      const match = payoutStr.match(/(\d+(\.\d+)?)/);
-      if (match) {
-        const val = parseFloat(match[1]);
-        const share = platform.goldConfig?.defaultGoldPercent || 10;
-        const reward = (val * (share / 100)).toFixed(2);
-        return `${reward}% Gold`;
-      }
-      return `${payoutStr} Reward`;
-    }
+    // No slabs at all — nothing to calculate
+    if (slabs.length === 0 || defaultShare === 0) return null;
 
-    return null;
+    let maxRewardValue = 0;
+    let bestLabel = null;
+    let bestType = 'percentage'; // 'percentage' or 'fixed'
+
+    slabs.forEach(slab => {
+      // Check for manual admin override for this slab first
+      const rule = platform.goldRewardRules?.find(r =>
+        r.slabLabel === slab.label &&
+        r.region === region &&
+        r.isActive
+      );
+
+      if (rule) {
+        // Manual rule always wins for this slab
+        if (rule.rewardValue >= maxRewardValue) {
+          maxRewardValue = rule.rewardValue;
+          bestLabel = this.formatRewardLabel(rule);
+        }
+        return; // Next slab
+      }
+
+      // No manual rule — calculate dynamically from each commission tier
+      const commissions = slab.commission || [];
+      commissions.forEach(tier => {
+        const pct = tier.percentage || 0;
+        const fixed = tier.fixed || 0;
+
+        if (pct > 0) {
+          // Percentage commission: calculate gold share
+          const goldVal = pct * (defaultShare / 100);
+          if (goldVal > maxRewardValue) {
+            maxRewardValue = goldVal;
+            bestType = 'percentage';
+            bestLabel = `${goldVal.toFixed(2).replace(/\.00$/, '')}% Gold`;
+          }
+        } else if (fixed > 0 && maxRewardValue === 0) {
+          // Fixed commission: calculate gold share in currency
+          // Only use if no percentage-based reward found yet
+          const goldFixed = (fixed * (defaultShare / 100)).toFixed(0);
+          if (parseFloat(goldFixed) > 0 && bestType === 'fixed') {
+            bestLabel = `₹${goldFixed} Gold`;
+          } else if (!bestLabel) {
+            bestLabel = `₹${goldFixed} Gold`;
+            bestType = 'fixed';
+          }
+        }
+      });
+    });
+
+    return bestLabel;
   }
 };
 

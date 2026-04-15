@@ -34,32 +34,31 @@ app.use('/api', rateLimit({
   message: { success: false, message: 'Too many requests, please slow down' },
 }));
 
-// Stricter limit for affiliate link generation (prevent abuse)
+
 app.use('/api/affiliate/link', rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 30,
   message: { success: false, message: 'Too many link requests' },
 }));
 
-// ─── RAW BODY FOR WEBHOOK SIGNATURE VERIFICATION ─────────────────────────
-// Must come BEFORE json() parser — only applied to webhook route
+
 app.use('/api/webhooks/inrdeals', express.raw({ type: 'application/json' }), (req, res, next) => {
   req.rawBody = req.body.toString('utf8');
   next();
 });
 
-// ─── BODY PARSING ─────────────────────────────────────────────────────────
+
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 
-// ─── LOGGING ──────────────────────────────────────────────────────────────
+
 app.use(morgan('combined', {
   stream: { write: (msg) => logger.info(msg.trim()) },
   skip: (req) => req.url === '/health', // don't log health checks
 }));
 
-// ─── HEALTH CHECK ─────────────────────────────────────────────────────────
+
 app.get('/health', async (req, res) => {
   const mongoose = require('mongoose');
   res.json({
@@ -71,15 +70,14 @@ app.get('/health', async (req, res) => {
   });
 });
 
-// ─── API ROUTES ───────────────────────────────────────────────────────────
+
 app.use('/api', routes);
 
-// ─── 404 ──────────────────────────────────────────────────────────────────
+
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route ${req.method} ${req.path} not found` });
 });
 
-// ─── GLOBAL ERROR HANDLER ─────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   logger.error(`Unhandled error: ${err.stack}`);
   res.status(err.status || 500).json({
