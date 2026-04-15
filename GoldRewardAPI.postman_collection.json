@@ -34,12 +34,26 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/platforms?region=IN&page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["platforms"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platforms"
+              ],
               "query": [
-                { "key": "region", "value": "IN", "description": "IN or AE" },
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
+                {
+                  "key": "region",
+                  "value": "IN",
+                  "description": "IN or AE"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
               ]
             },
             "description": "Returns all active platforms with their dynamic gold badge calculated from commission slabs."
@@ -53,9 +67,19 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/platforms/{{platformSlug}}?region=IN",
-              "host": ["{{baseUrl}}"],
-              "path": ["platforms", "{{platformSlug}}"],
-              "query": [{ "key": "region", "value": "IN" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "platforms",
+                "{{platformSlug}}"
+              ],
+              "query": [
+                {
+                  "key": "region",
+                  "value": "IN"
+                }
+              ]
             },
             "description": "Fetch Aramya's details. The `maxGoldBadge` is calculated from its 9.12% (New User) and 3.84% (Old User) slabs with the admin's gold share %."
           },
@@ -68,9 +92,18 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/categories?region=IN",
-              "host": ["{{baseUrl}}"],
-              "path": ["categories"],
-              "query": [{ "key": "region", "value": "IN" }]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ],
+              "query": [
+                {
+                  "key": "region",
+                  "value": "IN"
+                }
+              ]
             },
             "description": "Returns category list with maxGoldBadge and bestPlatform attached."
           },
@@ -85,16 +118,31 @@
           "name": "3. [ADMIN] Increase Gold Share % (auto-updates all badges)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms/{{platformId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms", "{{platformId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms",
+                "{{platformId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"goldConfig\": {\n    \"defaultGoldPercent\": 20,\n    \"isGoldEnabled\": true\n  }\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Set the gold share to 20%. Now the badge will auto-calculate as:\n- New User (9.12%) × 20% = 1.82% Gold\n- Old User (3.84%) × 20% = 0.77% Gold\n→ Badge shows 1.82% Gold (best slab wins)"
           },
@@ -104,16 +152,31 @@
           "name": "4. [ADMIN] Disable Gold for a Platform",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms/{{platformId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms", "{{platformId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms",
+                "{{platformId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"goldConfig\": {\n    \"defaultGoldPercent\": 0,\n    \"isGoldEnabled\": false\n  }\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Set gold share to 0% to hide the badge (returns null)."
           },
@@ -128,16 +191,31 @@
           "name": "5. [ADMIN] Override a Specific Slab (e.g. New User = 25% Gold)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms/{{platformId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms", "{{platformId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms",
+                "{{platformId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"goldRewardRules\": [\n    {\n      \"region\": \"IN\",\n      \"slabLabel\": \"New User\",\n      \"rewardType\": \"percentage_of_commission\",\n      \"rewardValue\": 25,\n      \"currency\": \"INR\",\n      \"isActive\": true\n    }\n  ]\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "This manually overrides the 'New User' slab to give exactly 25% Gold regardless of the auto-calculation. The 'Old User' slab still auto-calculates."
           },
@@ -147,16 +225,31 @@
           "name": "6. [ADMIN] Set Fixed Gold Reward (e.g. ₹50 per sale)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms/{{platformId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms", "{{platformId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms",
+                "{{platformId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"goldRewardRules\": [\n    {\n      \"region\": \"IN\",\n      \"slabLabel\": \"New User\",\n      \"rewardType\": \"fixed_amount\",\n      \"rewardValue\": 50,\n      \"currency\": \"INR\",\n      \"isActive\": true\n    }\n  ]\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Give users a FIXED ₹50 gold reward for any New User purchase, regardless of commission."
           },
@@ -166,16 +259,31 @@
           "name": "7. [ADMIN] Multi-Slab Rules (New User + Old User different gold)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms/{{platformId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms", "{{platformId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms",
+                "{{platformId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"goldRewardRules\": [\n    {\n      \"region\": \"IN\",\n      \"slabLabel\": \"New User\",\n      \"rewardType\": \"percentage_of_commission\",\n      \"rewardValue\": 30,\n      \"currency\": \"INR\",\n      \"isActive\": true\n    },\n    {\n      \"region\": \"IN\",\n      \"slabLabel\": \"Old User\",\n      \"rewardType\": \"percentage_of_commission\",\n      \"rewardValue\": 15,\n      \"currency\": \"INR\",\n      \"isActive\": true\n    }\n  ]\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Set different gold shares for different slabs:\n- New User → 30% Gold\n- Old User → 15% Gold\nThe badge will show 30% (the best) to attract new users."
           },
@@ -185,16 +293,31 @@
           "name": "8. [ADMIN] Disable All Rules (revert to auto-calculation)",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms/{{platformId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms", "{{platformId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms",
+                "{{platformId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"goldRewardRules\": [],\n  \"goldConfig\": {\n    \"defaultGoldPercent\": 10,\n    \"isGoldEnabled\": true\n  }\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Clear all manual rules. The badge will auto-calculate from slabs × 10% gold share.\nFor Aramya: 9.12% × 10% = 0.91% Gold"
           },
@@ -212,8 +335,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms"
+              ]
             },
             "description": "Returns all platforms (including inactive ones) with product counts for admin management."
           },
@@ -223,16 +351,31 @@
           "name": "10. [ADMIN] Activate / Deactivate Platform",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/admin/platforms/{{platformId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "platforms", "{{platformId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "platforms",
+                "{{platformId}}"
+              ]
             },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"isActive\": true,\n  \"isFeatured\": false\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "description": "Toggle whether the platform appears on the frontend. Also used to mark as Featured."
           },
